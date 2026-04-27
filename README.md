@@ -9,4 +9,4 @@ Mapbox - map UI, geocoding contact adresses
 Hubspot - read/write contact data, read/write lists
 
 # This repo VS Sales Rep Map 
-This is just for UI mock up, will migrate logic over iteritively
+This is just for UI mock up, will migrate logic over iteritively and change from html to react
