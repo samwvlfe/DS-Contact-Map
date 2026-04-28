@@ -3,10 +3,10 @@ import styles from "/src/components/Buttons.module.css";
 export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
 
   function handleSelectedPress() {
-    if (activePanel === "selected") {
+    if (activePanel === "list") {
       onSetPanel("filter", 50);
     } else {
-      onSetPanel("selected", 85);
+      onSetPanel("list", 85);
     }
   }
 
@@ -26,8 +26,8 @@ export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
         className={styles.btn}
         onClick={handleSelectedPress}
         style={{
-          background: activePanel === "selected" ? "#cd7259" : "var(--orange)",
-          border: `2px solid ${activePanel === "selected" ? "white" : "transparent"}`,
+          background: activePanel === "list" ? "#cd7259" : "var(--orange)",
+          border: `2px solid ${activePanel === "list" ? "white" : "transparent"}`,
         }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

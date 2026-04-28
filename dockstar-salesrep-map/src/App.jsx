@@ -79,7 +79,7 @@ export default function App() {
         title={
           activePanel === "filter"
             ? "Filters"
-            : activePanel === "selected"
+            : activePanel === "list"
             ? "Selected Contacts"
             : "Contact Details"
         }
@@ -88,7 +88,7 @@ export default function App() {
         <div className="panels stack">
           {activePanel === "filter" && <Filter filters={filters} onApply={handleApplyFilters} />}
           {activePanel === "qv" && <Contact />}
-          {activePanel === "selected" && <List />}
+          {activePanel === "list" && <List />}
         </div>
       </BottomSheet>
     </div>
