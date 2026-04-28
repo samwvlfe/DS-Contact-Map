@@ -1,0 +1,47 @@
+.qv-control{
+    padding: 10px;
+    color: white;
+    font-size: var(--font-l);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--rad);
+    cursor: pointer;
+}
+.qv-control:active{
+    transform: translateY(2px);
+}
+
+.name{
+    font-weight: bold;
+    font-size: var(--font-max);
+    color: var(--text-h);
+    padding: 10px 0;
+}
+
+.infoCont{
+    background-color: var(--white);
+    padding: 8px;
+    border-radius: 10px;
+    border: var(--border);
+    gap: 5px;
+}
+.infoLine{
+    padding: 3px 0;
+    color: inherit;
+    text-decoration: none;
+}
+.infoLine:not(:last-child){
+    border-bottom: var(--border);
+}
+.infoTitle{
+    text-decoration: none;
+    font-size: var(--font-xs);
+    color: var(--text) !important;
+}
+.info{
+    font-size: var(--font-l);
+    color: var(--orange);
+    text-decoration: none;
+}

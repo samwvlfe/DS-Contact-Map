@@ -1,0 +1,132 @@
+.filterCont{
+    padding: 10px;
+    background-color: #fff;
+    flex: 1;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    gap: 20px;
+}
+
+.title{
+    font-size: var(--font-m);
+    color: var(--text);
+    font-weight: bold;
+}
+
+/* location input & dropdown */
+.location-sel-cont{
+    background-color: var(--bg-alt);
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.location-sel-input{
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 4px 6px;
+    font-size: var(--font-m);
+    color: #000000;
+}
+.location-sel-input::placeholder{
+    color: var(--text-h);
+    opacity: 0.5;
+}
+.location-dropdown{
+    display: none;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.location-dropdown.visible{
+    display: flex;
+}
+.dropdown-option{
+    padding: 8px 10px;
+    font-size: var(--font-m);
+    color: #161616;
+    background-color: #a3a3a3;
+    cursor: pointer;
+}
+.dropdown-option:not(:last-child){
+    border-bottom: 1px solid #b8b8b8;
+}
+.dropdown-option:active{
+    background-color: #b8b8b8;
+}
+/* location bubbles */
+.selected-locos{
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.loco{
+    background-color: var(--orange);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: var(--font-s);
+}
+
+/* lead status options */
+.lead-status-sel-cont{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+.lead-status{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: var(--border);
+    border-radius: 10px;
+    padding: 15px 0;
+    font-size: var(--font-l);
+    color: var(--text);
+    cursor: pointer;
+}
+.lead-status:active{
+    transform: translateY(2px);
+}
+.lead-status.selected{
+    border-color: var(--orange);
+    color: var(--orange);
+}
+
+/* distance slider */
+.sel-distance{
+    color: var(--orange);
+    font-size: var(--font-s);
+}
+.distance-slider{
+    width: 100%;
+    accent-color: var(--orange);
+}
+.slider-markers{
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-xs);
+    color: var(--text);
+    margin-top: -6px;
+}
+
+/* apply filters btn */
+.apply-filters-btn{
+    margin-top: 10px;
+    background-color: var(--orange);
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.apply-filters-btn:active{
+    transform: translateY(2px);
+}
