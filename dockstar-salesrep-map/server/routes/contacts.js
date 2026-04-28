@@ -29,31 +29,8 @@ export default async function contactRoutes(fastify) {
       const data = await response.json()
       const contacts = data.results || []
 
-      // Geocode each contact that has an address
-      const geocoded = await Promise.all(
-        contacts.map(async (contact) => {
-          const { address, city, state, zip } = contact.properties
-          const addressString = [address, city, state, zip].filter(Boolean).join(', ')
 
-          if (!addressString) {
-            return { ...contact, coordinates: null }
-          }
-
-          try {
-            const geoRes = await fetch(
-              `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(addressString)}.json?access_token=${process.env.MAPBOX_TOKEN}&limit=1`
-            )
-            const geoData = await geoRes.json()
-            const coords = geoData.features?.[0]?.center || null
-
-            return { ...contact, coordinates: coords }
-          } catch {
-            return { ...contact, coordinates: null }
-          }
-        })
-      )
-
-      reply.send({ results: geocoded })
+      reply.send({ results: contacts })
 
     } catch (err) {
       reply.status(500).send({ error: 'Failed to fetch contacts', detail: err.message })

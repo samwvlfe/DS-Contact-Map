@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '../.env.local' });
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
 import contactRoutes from './routes/contacts.js'
 import listRoutes from './routes/lists.js'

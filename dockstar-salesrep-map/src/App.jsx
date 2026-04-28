@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Buttons from "./components/Buttons";
 import BottomSheet from "./components/BottomSheet";
 import Filter from "./components/panels/Filter";
@@ -39,6 +39,20 @@ export default function App() {
   const [contacts, setContacts] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [activeContact, setActiveContact] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('hs_access_token');
+    if (!token) return;
+    fetch('http://localhost:3002/api/contacts', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Fetched contacts:', data.results);
+        setContacts(data.results || []);
+      })
+      .catch(err => console.error('Failed to fetch contacts:', err));
+  }, []);
 
   function handleSetPanel(panel, snap) {
     setActivePanel(panel);
