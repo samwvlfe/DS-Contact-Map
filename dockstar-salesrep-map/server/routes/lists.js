@@ -41,7 +41,6 @@ export default async function listRoutes(fastify) {
           detail: createData.message || JSON.stringify(createData),
         })
       }
-      console.log('createData full response:', JSON.stringify(createData))
       listId = createData.list?.listId ?? createData.listId
     } catch (err) {
       return reply.status(500).send({ error: 'Error calling HubSpot create list API', detail: err.message })

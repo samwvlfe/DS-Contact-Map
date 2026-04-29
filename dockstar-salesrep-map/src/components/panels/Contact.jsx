@@ -5,7 +5,7 @@ export default function Contact({ contact, onClick, selected }) {
         <div className="stack gap10">
             <div className="row apart">
                 <div className={`${styles.name} h1`} id='name'>Sam Wolfe</div>
-                <div className={`${styles['qv-control']} _add`}>Add Contact To List</div>
+                <div className="_btn _add">Add Contact To List</div>
             </div>
             <div className={`${styles.infoCont} stack`}>
                 <a className={`${styles.infoLine} stack`} href="tel:7576155020">

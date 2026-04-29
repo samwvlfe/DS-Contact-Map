@@ -3,16 +3,16 @@ import styles from "/src/components/Buttons.module.css";
 export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
 
   function handleSelectedPress() {
-    if (activePanel === "list") {
+    if (activePanel === "createlist") {
       onSetPanel("filter", 50);
     } else {
-      onSetPanel("list", 85);
+      onSetPanel("createlist", 85);
     }
   }
 
   function handleQVPress() {
     if (activePanel === "qv") {
-      onSetPanel("filter", 50);
+      onSetPanel("filter", 85);
     } else {
       onSetPanel("qv", 85);
     }
@@ -26,8 +26,8 @@ export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
         className={styles.btn}
         onClick={handleSelectedPress}
         style={{
-          background: activePanel === "list" ? "#cd7259" : "var(--orange)",
-          border: `2px solid ${activePanel === "list" ? "white" : "transparent"}`,
+          background: activePanel === "createlist" ? "#cd7259" : "var(--orange)",
+          border: `2px solid ${activePanel === "createlist" ? "white" : "transparent"}`,
         }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

@@ -1,58 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Buttons from "./components/Buttons";
 import BottomSheet from "./components/BottomSheet";
 import Filter from "./components/panels/Filter";
 import Contact from "./components/panels/Contact";
-import List from "./components/panels/List";
+import CreateList from "./components/panels/CreateList";
 import MapboxMap from "./components/MapboxMap";
-
-// Contact shape (from HubSpot API, filled in later):
-// {
-//   id: string,
-//   name: string,
-//   city: string,
-//   state: string,
-//   dist: number,
-//   status: "connected" | "attempted" | "new",
-//   phone: string,
-//   email: string,
-//   company: string,
-//   owner: string,
-//   lifecycle: string,
-//   address: string,
-//   zip: string,
-//   notes: string,
-//   lat: number,
-//   lng: number,
-// }
-
-const DEFAULT_FILTERS = {
-  locations: [],
-  statuses: [],
-  distance: 25,
-};
 
 export default function App() {
   const [activePanel, setActivePanel] = useState("filter");
   const [snapVh, setSnapVh] = useState(50);
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [contacts, setContacts] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [activeContact, setActiveContact] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem('hs_access_token');
-    if (!token) return;
-    fetch('http://localhost:3002/api/contacts', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Fetched contacts:', data.results);
-        setContacts(data.results || []);
-      })
-      .catch(err => console.error('Failed to fetch contacts:', err));
-  }, []);
 
   function handleSetPanel(panel, snap) {
     setActivePanel(panel);
@@ -74,10 +33,10 @@ export default function App() {
     setSelectedContacts(prev => prev.filter(c => c.id !== id));
   }
 
-  function handleApplyFilters(draft) {
-    setFilters(draft);
-    // Will trigger API fetch with filters when server is ready
+  function handleClearContacts() {
+    setSelectedContacts([]);
   }
+
 
   return (
     <div className="main">
@@ -90,19 +49,20 @@ export default function App() {
       <BottomSheet
         snapVh={snapVh}
         setSnapVh={setSnapVh}
+        onBack={activePanel !== "filter" ? () => handleSetPanel("filter", 50) : null}
         title={
           activePanel === "filter"
             ? "Filters"
-            : activePanel === "list"
+            : activePanel === "createlist"
             ? "Selected Contacts"
             : "Contact Details"
         }
       >
         {/* Panels */}
         <div className="panels stack">
-          {activePanel === "filter" && <Filter filters={filters} onApply={handleApplyFilters} />}
+          {activePanel === "filter" && <Filter onApply={setContacts} onAdd={handleAddContact} onRemove={handleRemoveContact} selectedContacts={selectedContacts} />}
           {activePanel === "qv" && <Contact />}
-          {activePanel === "list" && <List />}
+          {activePanel === "createlist" && <CreateList selectedContacts={selectedContacts} onRemove={handleRemoveContact} onClear={handleClearContacts} />}
         </div>
       </BottomSheet>
     </div>

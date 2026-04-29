@@ -4,7 +4,7 @@ import styles from "./BottomSheet.module.css";
 const SNAP_POINTS = [8, 50, 85];
 const SNAP_THRESHOLD = 60;
 
-export default function BottomSheet({ snapVh, setSnapVh, title, children }) {
+export default function BottomSheet({ snapVh, setSnapVh, title, children, onBack }) {
     const sheetRef = useRef(null);
     const dragRef  = useRef({ active: false, startY: 0, startH: 0 });
 
@@ -97,6 +97,14 @@ export default function BottomSheet({ snapVh, setSnapVh, title, children }) {
                     hidden={idx <= 0}
                     onClick={() => applySnap(SNAP_POINTS[idx - 1])}
                     />
+                    {onBack && (
+                        <div onClick={onBack} style={{ width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#333" }}>
+                            <svg width="14" height="14" viewBox="0 0 14 14">
+                                <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+                                <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+                            </svg>
+                        </div>
+                    )}
                 </div>
             </div>
 

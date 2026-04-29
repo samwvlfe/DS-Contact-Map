@@ -1,16 +1,19 @@
 .filterCont{
     padding: 10px;
     background-color: #fff;
-    flex: 1;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    gap: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--text);
 }
-
+.collapse{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 .title{
     font-size: var(--font-m);
     color: var(--text);
     font-weight: bold;
+    padding-bottom: 10px;
 }
 
 /* location input & dropdown */
@@ -114,19 +117,29 @@
     margin-top: -6px;
 }
 
-/* apply filters btn */
-.apply-filters-btn{
-    margin-top: 10px;
-    background-color: var(--orange);
-    color: white;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    border-radius: 10px;
-    cursor: pointer;
+.btnRow{
+    flex: 1;
 }
-.apply-filters-btn:active{
-    transform: translateY(2px);
+.backToFiltersBtn{
+    background-color: var(--bg-alt);
+    color: var(--text-h)
+}
+.applyFiltersBtn{
+    flex: 1;
+}
+
+.filteredListCont{
+    display: flex;
+    flex-direction: column;
+    overflow-Y: auto;
+}
+.addAll{
+    color: var(--add);
+    text-decoration: underline;
+}
+.fcTitle{
+    padding: 10px 0;
+    font-size: var(--font-l);
+    color: var(--text-rg);
+    font-weight: bold;
 }

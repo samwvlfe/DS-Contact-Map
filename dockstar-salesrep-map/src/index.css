@@ -65,6 +65,9 @@ body {
 .gap10{
   gap: 10px;
 }
+.gap20{
+  gap: 20px;
+}
 ._add{
     background-color: var(--add);
 }
@@ -79,7 +82,26 @@ body {
   background-color: #e3f2fd;
   color: #1565c0;
 }
-.attempted{
+._attempted{
   background-color: #fff3e0;
   color: #e65100;
+}
+._orange{
+  background-color: var(--orange);
+}
+._green{
+  background-color: var(--add);
+}
+._btn{
+  border-radius: var(--rad);
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+._btn:active{
+  transform: translateY(2px);
 }
