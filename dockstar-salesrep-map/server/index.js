@@ -1,5 +1,9 @@
 import dotenv from 'dotenv';
-dotenv.config({ path: '../.env.local' });
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, '../.env.local') });
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import authRoutes from './routes/auth.js'
@@ -18,8 +22,9 @@ fastify.register(contactRoutes, { prefix: '/api' })
 fastify.register(listRoutes, { prefix: '/api' })
 
 try {
-  await fastify.listen({ port: process.env.PORT || 3002 })
-  console.log('Server running on http://localhost:3002')
+  const port = process.env.PORT || 3002;
+  await fastify.listen({ port })
+  console.log(`Server running on http://localhost:${port}`)
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)

@@ -18,10 +18,10 @@ export default function CreateList({ selectedContacts = [], onRemove, onClear })
 
         {showModal && createPortal(
             <div className={styles.modalBackdrop} onClick={() => setShowModal(false)}>
-                <div className={styles.modal} onClick={e => e.stopPropagation()}>
-                    <div className={styles.modalTitle}>Name the List</div>
+                <div className={`${styles.modal} stack gap20`} onClick={e => e.stopPropagation()}>
+                    <div className={`${styles.modalTitle} bold`}>Name the List</div>
                     <input className={styles.modalInput} type="text" placeholder="List name..." />
-                    <div className={`${styles.control} _add`} onClick={() => setShowModal(false)}>Add to HubSpot</div>
+                    <div className="_btn _add" onClick={() => setShowModal(false)}>Add to HubSpot</div>
                 </div>
             </div>,
             document.body

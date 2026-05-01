@@ -1,16 +1,5 @@
 import styles from "./ContactList.module.css";
-
-const STATUS_LABEL = {
-    CONNECTED: "Connected",
-    ATTEMPTED_TO_CONTACT: "Attempted",
-    NEW: "New",
-};
-
-const STATUS_CLASS = {
-    CONNECTED: "_connected",
-    ATTEMPTED_TO_CONTACT: "_attempted",
-    NEW: "_new",
-};
+import { HS_TO_LABEL, HS_TO_CLASS } from "../../shared/leadStatus";
 
 export default function ContactList({ contacts = [], selectedContacts = [], onAdd, onRemove }) {
     if (!contacts.length) return null;
@@ -18,23 +7,22 @@ export default function ContactList({ contacts = [], selectedContacts = [], onAd
     return (
         <div className={`${styles.listCont} stack gap10`}>
             {contacts.map(contact => {
-                const p = contact.properties;
-                const name = [p.firstname, p.lastname].filter(Boolean).join(" ") || "—";
-                const location = [p.city, p.state].filter(Boolean).join(", ") || "—";
-                const status = p.hs_lead_status;
+                const name = [contact.firstName, contact.lastName].filter(Boolean).join(" ") || "—";
+                const location = [contact.city, contact.state].filter(Boolean).join(", ") || "—";
+                const status = contact.leadStatus;
                 const isSelected = selectedContacts.some(c => c.id === contact.id);
 
                 return (
                     <div key={contact.id} className="row">
                         <div className={`${styles.listItem} row`}>
                             <div className={`${styles.meta} stack`}>
-                                <div className={styles.name}>{name}</div>
+                                <div className={`${styles.name} bold`}>{name}</div>
                                 <div className={styles.dist}>{location}</div>
                             </div>
-                            <div className={styles.company}>{p.company || "—"}</div>
+                            <div className={styles.company}>{contact.company || "—"}</div>
                             {status && (
-                                <div className={`${styles.status} ${STATUS_CLASS[status] || ""}`}>
-                                    {STATUS_LABEL[status] || status}
+                                <div className={`${styles.status} ${HS_TO_CLASS[status] || ""} bold`}>
+                                    {HS_TO_LABEL[status] || status}
                                 </div>
                             )}
                         </div>

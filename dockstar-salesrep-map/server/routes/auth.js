@@ -50,4 +50,29 @@ export default async function authRoutes(fastify) {
       reply.status(500).send({ error: 'Token exchange failed', detail: err.message })
     }
   })
+
+  fastify.post('/refresh', async (request, reply) => {
+    const { refresh_token } = request.body ?? {};
+    if (!refresh_token) return reply.status(400).send({ error: 'No refresh token provided' });
+
+    try {
+      const response = await fetch('https://api.hubapi.com/oauth/v1/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'refresh_token',
+          client_id: process.env.HUBSPOT_CLIENT_ID,
+          client_secret: process.env.HUBSPOT_CLIENT_SECRET,
+          refresh_token,
+        }),
+      });
+
+      const tokens = await response.json();
+      if (tokens.error) return reply.status(400).send(tokens);
+
+      reply.send({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
+    } catch (err) {
+      reply.status(500).send({ error: 'Token refresh failed', detail: err.message });
+    }
+  })
 }

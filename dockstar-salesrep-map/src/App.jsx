@@ -6,6 +6,9 @@ import Contact from "./components/panels/Contact";
 import CreateList from "./components/panels/CreateList";
 import MapboxMap from "./components/MapboxMap";
 
+const MAP_CENTER = [-80.0, 32.8];
+const MAP_ZOOM = 5;
+
 export default function App() {
   const [activePanel, setActivePanel] = useState("filter");
   const [snapVh, setSnapVh] = useState(50);
@@ -20,7 +23,7 @@ export default function App() {
 
   function handleContactClick(contact) {
     setActiveContact(contact);
-    handleSetPanel("qv", 85);
+    handleSetPanel("qv", 50);
   }
 
   function handleAddContact(contact) {
@@ -40,7 +43,7 @@ export default function App() {
 
   return (
     <div className="main">
-      <MapboxMap center={[-80.0, 32.8]} zoom={9} />
+      <MapboxMap center={MAP_CENTER} zoom={MAP_ZOOM} contacts={contacts} onContactClick={handleContactClick} />
       <Buttons
         activePanel={activePanel}
         onSetPanel={handleSetPanel}
@@ -61,7 +64,7 @@ export default function App() {
         {/* Panels */}
         <div className="panels stack">
           {activePanel === "filter" && <Filter onApply={setContacts} onAdd={handleAddContact} onRemove={handleRemoveContact} selectedContacts={selectedContacts} />}
-          {activePanel === "qv" && <Contact />}
+          {activePanel === "qv" && <Contact contact={activeContact} onAdd={handleAddContact} />}
           {activePanel === "createlist" && <CreateList selectedContacts={selectedContacts} onRemove={handleRemoveContact} onClear={handleClearContacts} />}
         </div>
       </BottomSheet>

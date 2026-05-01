@@ -4,7 +4,7 @@
 .listItem{
     background-color: var(--white);
     align-items: center;
-    padding: 10px;
+    padding: var(--pad);
     border-radius: var(--rad);
     flex: 1;
     justify-content: space-between;
@@ -20,14 +20,10 @@
     font-size: var(--font-xs);
     color: var(--text);
 }
-.deets{
-    gap: 10px;
-}
 .status{
-    border-radius: 10px;
+    border-radius: var(--rad);
     font-size: var(--font-m);
     padding: 3px;
-    font-weight: bold;
 }
 .company{
     font-size: var(--font-m);
@@ -45,7 +41,7 @@
     justify-content: center;
 }
 .actionBtn{
-    padding-left: 10px;
+    padding-left: var(--pad);
     cursor: pointer;
     flex-shrink: 0;
 }

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styles from "./Filter.module.css";
 import ContactList from "../ContactList";
-
-const LEAD_STATUSES = ["Connected", "Attempted", "New"];
+import { LEAD_STATUSES } from "../../../shared/leadStatus";
+import { fetchContacts } from "../../lib/api";
+import { US_STATES } from "../../data/states";
 
 const DEFAULT_FILTERS = { locations: [], statuses: [], distance: 25 };
 
@@ -11,6 +12,7 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
     const [locationInput, setLocationInput] = useState("");
     const [contacts, setContacts] = useState([]);
     const [filtersVisible, setFiltersVisible] = useState(true);
+    const [fetchError, setFetchError] = useState(null);
 
     function addLocation(loc) {
         const trimmed = loc.trim();
@@ -34,54 +36,52 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
 
     const activeCount = draft.locations.length + draft.statuses.length + (draft.distance !== 25 ? 1 : 0);
 
+    const trimmed = locationInput.trim();
+    const q = trimmed.toLowerCase();
+    const stateSuggestions = trimmed
+        ? US_STATES.filter(s =>
+            s.name.toLowerCase().includes(q) || s.abbr.toLowerCase() === q
+          ).slice(0, 5)
+        : [];
+
     async function applyFilters() {
-        const token = localStorage.getItem('hs_access_token');
-        if (!token) {
-            console.error('No hs_access_token in localStorage — user needs to log in');
-            return;
-        }
-
-        const params = new URLSearchParams();
-        if (draft.statuses.length) params.set('statuses', draft.statuses.join(','));
-
-        console.log('Fetching contacts with params:', params.toString() || '(none)');
-
+        setFetchError(null);
         try {
-            const res = await fetch(`http://localhost:3002/api/contacts?${params}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log('Response status:', res.status);
-            const data = await res.json();
-            console.log('Raw API response:', data);
-            const results = data.results || [];
-            console.log('Contacts to render:', results.length);
+            const results = await fetchContacts(draft);
+            if (!results) {
+                setFetchError('Not logged in — please reconnect to HubSpot.');
+                return;
+            }
             setContacts(results);
             onApply(results);
         } catch (err) {
             console.error('Failed to fetch contacts:', err);
+            setFetchError('Failed to fetch contacts. Check the server console for details.');
         }
     }
 
     return (
         <>
         <div className={`${styles.filterCont} stack gap20`}>
-            {filtersVisible && <div className={`${styles.collapse} stack gap20`}>
+            {filtersVisible && <div className="stack gap20">
                 {/* LOCATION FILTER */}
-                <div>
-                    <div className={styles.title}>LOCATION</div>
-                    <div className={styles['location-sel-cont']}>
+                <div className="stack gap10">
+                    <div className={`${styles.title} bold`}>LOCATION</div>
+                    <div className={`${styles['location-sel-cont']} stack`}>
                         <input
                             className={styles['location-sel-input']}
                             type="text"
-                            placeholder="Type a city or state, press Enter"
+                            placeholder="Type a state, press Enter"
                             value={locationInput}
                             onChange={e => setLocationInput(e.target.value)}
                             onKeyDown={e => e.key === "Enter" && addLocation(locationInput)}
                             />
-                        <div className={`${styles['location-dropdown']} ${locationInput.trim() ? styles.visible : ""}`}>
-                            <div className={styles['dropdown-option']} onClick={() => addLocation(locationInput)}>
-                                Add "{locationInput.trim()}"
-                            </div>
+                        <div className={`${styles['location-dropdown']} ${trimmed ? styles.visible : ""} stack`}>
+                            {stateSuggestions.map(s => (
+                                <div key={s.abbr} className={styles['dropdown-option']} onClick={() => addLocation(s.name)}>
+                                    {s.name} <span className={styles['dropdown-abbr']}>{s.abbr}</span>
+                                </div>
+                            ))}
                         </div>
                         <div className={styles['selected-locos']}>
                             {draft.locations.map(loc => (
@@ -94,23 +94,23 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
                 </div>
 
                 {/* LEAD STATUS FILTER */}
-                <div>
+                <div className="stack gap10">
                     <div className={styles.title}>LEAD STATUS</div>
                     <div className={styles['lead-status-sel-cont']}>
                         {LEAD_STATUSES.map(s => (
                             <div
-                                key={s}
-                                className={`${styles['lead-status']} ${draft.statuses.includes(s) ? styles.selected : ""}`}
-                                onClick={() => toggleStatus(s)}
+                                key={s.key}
+                                className={`${styles['lead-status']} ${draft.statuses.includes(s.label) ? styles.selected : ""} row`}
+                                onClick={() => toggleStatus(s.label)}
                             >
-                                {s}
+                                {s.label}
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* DISTANCE FILTER */}
-                <div>
+                {/* <div className="stack gap10">
                     <div className="row apart">
                         <div className={styles.title}>DISTANCE</div>
                         <div className={styles['sel-distance']}>{draft.distance} MI</div>
@@ -124,13 +124,14 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
                         value={draft.distance}
                         onChange={e => setDraft(d => ({ ...d, distance: Number(e.target.value) }))}
                     />
-                    <div className={styles['slider-markers']}>
+                    <div className={`${styles['slider-markers']} row`}>
                         <span>0</span>
                         <span>75</span>
                         <span>150</span>
                     </div>
-                </div>
+                </div> */}
             </div>}
+            {fetchError && <div style={{ color: 'var(--remove, red)', fontSize: 13 }}>{fetchError}</div>}
             <div className={`${styles.btnRow} row gap10`}>
                 <div className={`${styles.applyFiltersBtn} _btn _orange`} onClick={() => { applyFilters(); setFiltersVisible(false); }}>
                     {filtersVisible ? `Apply Filters (${activeCount})` : `Applied Filters (${activeCount})`}
@@ -141,7 +142,7 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
         {contacts.length > 0 && (
             <div className={`${styles.filteredListCont} stack`}>
                 <div className="row apart" style={{marginTop: 10, marginBottom: 10}}>
-                    <div className={styles.fcTitle}>Filtered Contacts</div>
+                    <div className={`${styles.fcTitle} bold`}>Filtered Contacts</div>
                     <div className="_btn _add" onClick={() => contacts.forEach(c => onAdd(c))}>Add All</div>
                 </div>
                 <ContactList contacts={contacts} onAdd={onAdd} onRemove={onRemove} selectedContacts={selectedContacts} />

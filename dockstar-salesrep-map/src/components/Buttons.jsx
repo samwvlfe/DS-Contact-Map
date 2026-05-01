@@ -1,4 +1,4 @@
-import styles from "/src/components/Buttons.module.css";
+import styles from "./Buttons.module.css";
 
 export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
 
@@ -19,7 +19,7 @@ export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
   }
 
   return (
-    <div className={styles['btn-cont']}>
+    <div className={`${styles['btn-cont']} row gap10`}>
 
       {/* Selected Contacts Button */}
       <div

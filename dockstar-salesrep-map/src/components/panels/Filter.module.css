@@ -1,28 +1,20 @@
 .filterCont{
-    padding: 10px;
+    padding: var(--pad);
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: var(--rad);
     border: 1px solid var(--text);
-}
-.collapse{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 .title{
     font-size: var(--font-m);
     color: var(--text);
-    font-weight: bold;
-    padding-bottom: 10px;
+    padding-bottom: var(--pad);
 }
 
 /* location input & dropdown */
 .location-sel-cont{
     background-color: var(--bg-alt);
-    border-radius: 10px;
+    border-radius: var(--rad);
     padding: 5px;
-    display: flex;
-    flex-direction: column;
     gap: 5px;
 }
 .location-sel-input{
@@ -40,7 +32,6 @@
 }
 .location-dropdown{
     display: none;
-    flex-direction: column;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -48,7 +39,7 @@
     display: flex;
 }
 .dropdown-option{
-    padding: 8px 10px;
+    padding: var(--pad);
     font-size: var(--font-m);
     color: #161616;
     background-color: #a3a3a3;
@@ -60,6 +51,11 @@
 .dropdown-option:active{
     background-color: #b8b8b8;
 }
+.dropdown-abbr{
+    color: var(--text);
+    font-size: var(--font-s);
+    margin-left: 4px;
+}
 /* location bubbles */
 .selected-locos{
     display: flex;
@@ -70,7 +66,7 @@
     background-color: var(--orange);
     color: white;
     padding: 5px 10px;
-    border-radius: 10px;
+    border-radius: var(--rad);
     font-size: var(--font-s);
 }
 
@@ -81,12 +77,10 @@
     gap: 5px;
 }
 .lead-status{
-    display: flex;
     justify-content: center;
-    align-items: center;
     text-align: center;
     border: var(--border);
-    border-radius: 10px;
+    border-radius: var(--rad);
     padding: 15px 0;
     font-size: var(--font-l);
     color: var(--text);
@@ -110,7 +104,6 @@
     accent-color: var(--orange);
 }
 .slider-markers{
-    display: flex;
     justify-content: space-between;
     font-size: var(--font-xs);
     color: var(--text);
@@ -129,8 +122,6 @@
 }
 
 .filteredListCont{
-    display: flex;
-    flex-direction: column;
     overflow-Y: auto;
 }
 .addAll{
@@ -141,5 +132,4 @@
     padding: 10px 0;
     font-size: var(--font-l);
     color: var(--text-rg);
-    font-weight: bold;
 }
