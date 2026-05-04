@@ -156,7 +156,7 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
                 <div className={`${styles.applyFiltersBtn} _btn _orange`} onClick={() => { applyFilters(); setFiltersVisible(false); }}>
                     {filtersVisible ? `Apply Filters (${activeCount})` : `Applied Filters (${activeCount})`}
                 </div>
-                {!filtersVisible && <div className={`${styles.backToFiltersBtn} _btn`} onClick={() => setFiltersVisible(true)}>Edit Filters</div>}
+                {!filtersVisible && <div className={`${styles.backToFiltersBtn} _btn`} onClick={() => { setFiltersVisible(true); setContacts([]); onApply([]); }}>Edit Filters</div>}
             </div>
         </div>
         {contacts.length > 0 && (

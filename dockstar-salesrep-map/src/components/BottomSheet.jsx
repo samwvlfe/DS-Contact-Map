@@ -3,8 +3,8 @@ import styles from "./BottomSheet.module.css";
 import NavArrow from "./NavArrow.jsx";
 import { CloseIcon } from "./icons";
 
-const SNAP_POINTS = [8, 50, 85];
-const SNAP_THRESHOLD = 60;
+const SNAP_POINTS = [8, 50,90];
+const SNAP_THRESHOLD = 70;
 
 export default function BottomSheet({ snapVh, setSnapVh, title, children, onBack }) {
     const sheetRef = useRef(null);
@@ -36,7 +36,7 @@ export default function BottomSheet({ snapVh, setSnapVh, title, children, onBack
     function moveDrag(y) {
         if (!dragRef.current.active || !sheetRef.current) return;
         const delta = dragRef.current.startY - y;
-        const next = Math.min(Math.max(dragRef.current.startH + delta, vh(8)), vh(85));
+        const next = Math.min(Math.max(dragRef.current.startH + delta, vh(8)), vh(90));
         sheetRef.current.style.height = next + "px";
     }
 

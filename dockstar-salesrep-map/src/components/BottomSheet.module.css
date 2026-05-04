@@ -37,7 +37,7 @@
 .panel{
     flex: 1;
     padding: 0 16px;
-    overflow: auto;
+    overflow: hidden;
 }
 .closeBtn{
     width: 32px;

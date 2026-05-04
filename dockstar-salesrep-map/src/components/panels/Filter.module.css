@@ -3,6 +3,7 @@
     background-color: #fff;
     border-radius: var(--rad);
     border: 1px solid var(--text);
+    min-height: 40px;
 }
 .title{
     font-size: var(--font-m);
@@ -136,4 +137,10 @@
     padding: 10px 0;
     font-size: var(--font-l);
     color: var(--text-rg);
+}
+@media (max-width: 1000px){
+    .grid-item{
+        padding: 5px 0;
+        font-size: var(--font-m);
+    }
 }
