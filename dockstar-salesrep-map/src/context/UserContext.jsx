@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3002";
+const BASE = import.meta.env.VITE_API_URL;
 
 const UserContext = createContext(null);
 

@@ -2,7 +2,7 @@ import styles from "./User.module.css";
 import listyles from "./Contact.module.css";
 import { useUser } from "../../context/UserContext";
 
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3002";
+const BASE = import.meta.env.VITE_API_URL;
 
 export default function User() {
   const { user, error } = useUser();

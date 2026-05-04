@@ -64,7 +64,7 @@ export default async function authRoutes(fastify) {
         displayName: `${ownerData.firstName ?? ''} ${ownerData.lastName ?? ''}`.trim(),
       }
 
-      reply.redirect(`http://localhost:5173/auth-success`)
+      reply.redirect(`${process.env.FRONTEND_URL}/auth-success`)
 
     } catch (err) {
       reply.status(500).send({ error: 'Token exchange failed', detail: err.message })

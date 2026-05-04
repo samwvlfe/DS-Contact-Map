@@ -15,7 +15,7 @@ const fastify = Fastify({ logger: true })
 
 // register plugins
 await fastify.register(cors, {
-  origin: 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   credentials: true
 })
 
@@ -31,9 +31,9 @@ fastify.register(contactRoutes, { prefix: '/api' })
 fastify.register(listRoutes, { prefix: '/api' })
 
 try {
-  const port = process.env.PORT || 3002;
-  await fastify.listen({ port })
-  console.log(`Server running on http://localhost:${port}`)
+  const port = process.env.PORT || 3002
+  await fastify.listen({ port, host: '0.0.0.0' })
+  console.log(`Server running on port ${port}`)
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)

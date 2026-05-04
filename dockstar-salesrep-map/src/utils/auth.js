@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3002";
+const BASE = import.meta.env.VITE_API_URL;
 
 async function refreshSession() {
     const res = await fetch(`${BASE}/auth/refresh`, {

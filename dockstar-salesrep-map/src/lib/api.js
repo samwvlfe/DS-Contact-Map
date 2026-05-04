@@ -2,7 +2,7 @@ import { fetchWithAuth } from "../utils/auth";
 import { contactFromHubspot } from "../types/Contact";
 import { geocodeContacts } from "./geocode";
 
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3002";
+const BASE = import.meta.env.VITE_API_URL;
 
 // fetch filtered contacts and turn into contactFromHubspot shape
 export async function fetchContacts(filters = {}) {
