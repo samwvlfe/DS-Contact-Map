@@ -75,7 +75,9 @@ export default function App() {
       >
         {/* Panels */}
         <div className="panels stack">
-          {activePanel === "filter" && <Filter onApply={setContacts} onAdd={handleAddContact} onRemove={handleRemoveContact} selectedContacts={selectedContacts} />}
+          <div style={{ display: activePanel === "filter" ? "contents" : "none" }}>
+            <Filter onApply={setContacts} onAdd={handleAddContact} onRemove={handleRemoveContact} selectedContacts={selectedContacts} />
+          </div>
           {activePanel === "qv" && <Contact contact={activeContact} onAdd={handleAddContact} />}
           {activePanel === "createlist" && <CreateList selectedContacts={selectedContacts} onRemove={handleRemoveContact} onClear={handleClearContacts} onNotify={addNotification} />}
           {activePanel === "user" && <User />}
