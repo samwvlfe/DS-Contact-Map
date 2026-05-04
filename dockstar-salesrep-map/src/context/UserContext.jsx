@@ -9,7 +9,7 @@ export function UserProvider({ children }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(`${BASE}/auth/me`, { credentials: "include" })
+        fetch(`${BASE}/auth/me`, { headers: { 'x-session-id': localStorage.getItem('session_id') ?? '' } })
             .then(r => {
                 if (!r.ok) throw new Error("Not authenticated");
                 return r.json();

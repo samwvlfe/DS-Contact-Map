@@ -10,9 +10,10 @@ export default function User() {
   async function handleLogout() {
     await fetch(`${BASE}/auth/logout`, {
       method: "POST",
-      credentials: "include",
+      headers: { 'x-session-id': localStorage.getItem('session_id') ?? '' },
     });
-    window.location.href = "/login";
+    localStorage.removeItem('session_id');
+    window.location.href = `${BASE}/auth/login`;
   }
 
   if (error) return <div className={styles.error}>{error}</div>;

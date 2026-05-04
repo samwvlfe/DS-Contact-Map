@@ -1,4 +1,5 @@
-import { LABEL_TO_HS } from '../../shared/leadStatus.js';
+import { LABEL_TO_HS } from '../../shared/leadStatus.js'
+import { sessions } from '../index.js'
 import { US_STATES } from '../../shared/states.js';
 
 const stateByName = new Map(US_STATES.map(s => [s.name.toLowerCase(), s]));
@@ -34,7 +35,8 @@ const PROPERTIES = [
 export default async function contactRoutes(fastify) {
 
   fastify.get('/contacts', async (request, reply) => {
-    const accessToken = request.session.tokens?.accessToken
+    const sessionId = request.headers['x-session-id']
+    const accessToken = sessions.get(sessionId)?.tokens?.accessToken
     if (!accessToken) return reply.status(401).send({ error: 'Not authenticated' })
 
     const { statuses, lifecycles, locations, ownerId } = request.query

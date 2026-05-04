@@ -1,3 +1,6 @@
+import { randomUUID } from 'crypto'
+import { sessions } from '../index.js'
+
 export default async function authRoutes(fastify) {
 
   // Redirect to HubSpot login
@@ -50,21 +53,24 @@ export default async function authRoutes(fastify) {
       )
       const ownerData = await ownerRes.json()
 
-      // Store everything server-side in the session
-      request.session.tokens = {
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
-      }
-      request.session.user = {
-        email: tokenInfo.user,
-        userId: tokenInfo.user_id,
-        hubId: tokenInfo.hub_id,
-        firstName: ownerData.firstName ?? '',
-        lastName: ownerData.lastName ?? '',
-        displayName: `${ownerData.firstName ?? ''} ${ownerData.lastName ?? ''}`.trim(),
-      }
+      // Store everything in the in-memory session store
+      const sessionId = randomUUID()
+      sessions.set(sessionId, {
+        tokens: {
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+        },
+        user: {
+          email: tokenInfo.user,
+          userId: tokenInfo.user_id,
+          hubId: tokenInfo.hub_id,
+          firstName: ownerData.firstName ?? '',
+          lastName: ownerData.lastName ?? '',
+          displayName: `${ownerData.firstName ?? ''} ${ownerData.lastName ?? ''}`.trim(),
+        }
+      })
 
-      reply.redirect(`${process.env.FRONTEND_URL}/auth-success`)
+      reply.redirect(`${process.env.FRONTEND_URL}/auth-success?session_id=${sessionId}`)
 
     } catch (err) {
       reply.status(500).send({ error: 'Token exchange failed', detail: err.message })
@@ -73,17 +79,17 @@ export default async function authRoutes(fastify) {
 
   // Frontend calls this to get current user
   fastify.get('/me', async (request, reply) => {
-    console.log('session data:', request.session)
-    console.log('cookies:', request.headers.cookie)
-    if (!request.session?.user) {
-      return reply.status(401).send({ error: 'Not authenticated' })
-    }
-    reply.send(request.session.user)
+    const sessionId = request.headers['x-session-id']
+    const session = sessions.get(sessionId)
+    if (!session) return reply.status(401).send({ error: 'Not authenticated' })
+    reply.send(session.user)
   })
 
   fastify.post('/refresh', async (request, reply) => {
-    const refreshToken = request.session.tokens?.refreshToken;
-    if (!refreshToken) return reply.status(401).send({ error: 'No refresh token in session' });
+    const sessionId = request.headers['x-session-id']
+    const session = sessions.get(sessionId)
+    const refreshToken = session?.tokens?.refreshToken
+    if (!refreshToken) return reply.status(401).send({ error: 'No refresh token in session' })
 
     try {
       const response = await fetch('https://api.hubapi.com/oauth/v1/token', {
@@ -95,22 +101,23 @@ export default async function authRoutes(fastify) {
           client_secret: process.env.HUBSPOT_CLIENT_SECRET,
           refresh_token: refreshToken,
         }),
-      });
+      })
 
-      const tokens = await response.json();
-      if (tokens.error) return reply.status(400).send(tokens);
+      const tokens = await response.json()
+      if (tokens.error) return reply.status(400).send(tokens)
 
-      request.session.tokens.accessToken = tokens.access_token;
-      if (tokens.refresh_token) request.session.tokens.refreshToken = tokens.refresh_token;
+      session.tokens.accessToken = tokens.access_token
+      if (tokens.refresh_token) session.tokens.refreshToken = tokens.refresh_token
 
-      reply.send({ ok: true });
+      reply.send({ ok: true })
     } catch (err) {
-      reply.status(500).send({ error: 'Token refresh failed', detail: err.message });
+      reply.status(500).send({ error: 'Token refresh failed', detail: err.message })
     }
   })
 
   fastify.post('/logout', async (request, reply) => {
-    await request.session.destroy()
+    const sessionId = request.headers['x-session-id']
+    sessions.delete(sessionId)
     reply.send({ ok: true })
   })
 }

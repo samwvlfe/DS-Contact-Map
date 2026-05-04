@@ -1,7 +1,10 @@
+import { sessions } from '../index.js'
+
 export default async function listRoutes(fastify) {
 
   fastify.post('/lists/create', async (request, reply) => {
-    const accessToken = request.session.tokens?.accessToken
+    const sessionId = request.headers['x-session-id']
+    const accessToken = sessions.get(sessionId)?.tokens?.accessToken
 
     if (!accessToken) {
       return reply.status(401).send({ error: 'Not authenticated' })

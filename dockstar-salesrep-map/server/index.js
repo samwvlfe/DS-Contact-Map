@@ -13,20 +13,13 @@ import listRoutes from './routes/lists.js'
 
 const fastify = Fastify({ logger: true })
 
+// In-memory session store — keyed by UUID session ID
+export const sessions = new Map()
+
 // register plugins
 await fastify.register(cors, {
   origin: process.env.FRONTEND_URL,
   credentials: true
-})
-
-await fastify.register(import('@fastify/cookie'))
-await fastify.register(import('@fastify/session'), {
-  secret: process.env.SESSION_SECRET,
-  cookie: { 
-    secure: true ,
-    sameSite: 'none',
-    httpOnly: true,
-  }, 
 })
 
 // register routes
