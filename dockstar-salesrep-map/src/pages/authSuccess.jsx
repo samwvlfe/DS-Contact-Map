@@ -11,7 +11,7 @@ export default function AuthSuccess() {
         window.location.href = '/'
       })
       .catch(() => {
-        window.location.href = '/login?error=auth_failed'
+        window.location.href = 'https://ds-contact-map.onrender.com/auth/login'
       })
   }, [])
 

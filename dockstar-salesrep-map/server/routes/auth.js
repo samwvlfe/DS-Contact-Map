@@ -73,6 +73,8 @@ export default async function authRoutes(fastify) {
 
   // Frontend calls this to get current user
   fastify.get('/me', async (request, reply) => {
+    console.log('session data:', request.session)
+    console.log('cookies:', request.headers.cookie)
     if (!request.session?.user) {
       return reply.status(401).send({ error: 'Not authenticated' })
     }

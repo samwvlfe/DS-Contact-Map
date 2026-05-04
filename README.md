@@ -19,3 +19,5 @@ npx cap add ios
 npm run build
 npx cap sync ios
 npx cap open ios
+
+login url: https://ds-contact-map.onrender.com/auth/login
