@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
-import AuthSuccess from './pages/AuthSuccess.jsx'
+import AuthSuccess from './pages/authSuccess.jsx'
 import { UserProvider } from './context/UserContext.jsx'
 
 createRoot(document.getElementById('root')).render(
