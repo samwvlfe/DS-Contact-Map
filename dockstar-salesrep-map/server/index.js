@@ -22,7 +22,11 @@ await fastify.register(cors, {
 await fastify.register(import('@fastify/cookie'))
 await fastify.register(import('@fastify/session'), {
   secret: process.env.SESSION_SECRET,
-  cookie: { secure: false }, // set true in production with HTTPS
+  cookie: { 
+    secure: true ,
+    sameSite: 'none',
+    httpOnly: true,
+  }, 
 })
 
 // register routes
