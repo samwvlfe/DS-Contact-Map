@@ -81,8 +81,8 @@
     text-align: center;
     border: var(--border);
     border-radius: var(--rad);
-    padding: 15px 0;
-    font-size: var(--font-l);
+    padding: 5px 0;
+    font-size: var(--font-m);
     color: var(--text);
     cursor: pointer;
 }
@@ -137,10 +137,4 @@
     padding: 10px 0;
     font-size: var(--font-l);
     color: var(--text-rg);
-}
-@media (max-width: 1000px){
-    .grid-item{
-        padding: 5px 0;
-        font-size: var(--font-m);
-    }
 }
