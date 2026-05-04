@@ -10,82 +10,111 @@ function resolveVariant(loc) {
 }
 
 function contactMatchesLocations(props, variants) {
-  const state   = (props.state   || '').toLowerCase();
-  const address = (props.address || '').toLowerCase();
+  const state = (props.state || '').toLowerCase();
+  const city  = (props.city  || '').toLowerCase();
+
   return variants.some(({ name, abbr }) => {
     const n = name.toLowerCase();
-    if (state.includes(n) || address.includes(n)) return true;
+    if (state.includes(n) || city.includes(n)) return true;
     if (abbr) {
       const wordRe = new RegExp(`\\b${abbr.toLowerCase()}\\b`);
-      if (wordRe.test(state) || wordRe.test(address)) return true;
+      if (wordRe.test(state) || wordRe.test(city)) return true;
     }
     return false;
   });
 }
 
+const HS_SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
+const PROPERTIES = [
+  'firstname', 'lastname', 'email', 'phone', 'company',
+  'lifecyclestage', 'hs_lead_status', 'hubspot_owner_id',
+  'address', 'city', 'state', 'zip', 'photo_url'
+]
+
 export default async function contactRoutes(fastify) {
 
   fastify.get('/contacts', async (request, reply) => {
-    const authHeader = request.headers.authorization
+    const accessToken = request.session.tokens?.accessToken
+    if (!accessToken) return reply.status(401).send({ error: 'Not authenticated' })
 
-    if (!authHeader) {
-      return reply.status(401).send({ error: 'No token provided' })
+    const { statuses, lifecycles, locations, ownerId } = request.query
+
+    // Build server-side filter groups for status, lifecycle, and owner
+    const filters = []
+
+    const hsStatuses = statuses
+      ? statuses.split(',').map(s => LABEL_TO_HS[s.trim()]).filter(Boolean)
+      : []
+
+    if (hsStatuses.length > 0) {
+      filters.push({ propertyName: 'hs_lead_status', operator: 'IN', values: hsStatuses })
     }
 
-    const accessToken = authHeader.replace('Bearer ', '')
-    const { statuses, locations } = request.query
+    const hsLifecycles = lifecycles
+      ? lifecycles.split(',').map(l => l.trim().toLowerCase()).filter(Boolean)
+      : []
 
-    const filterGroups = []
-    if (statuses) {
-      const hsStatuses = statuses.split(',').map(s => LABEL_TO_HS[s.trim()]).filter(Boolean)
-      if (hsStatuses.length > 0) {
-        filterGroups.push({
-          filters: [{ propertyName: 'hs_lead_status', operator: 'IN', values: hsStatuses }]
-        })
-      }
+    if (hsLifecycles.length > 0) {
+      filters.push({ propertyName: 'lifecyclestage', operator: 'IN', values: hsLifecycles })
     }
+
+    if (ownerId) {
+      filters.push({ propertyName: 'hubspot_owner_id', operator: 'EQ', value: ownerId })
+    }
+
+    const filterGroups = filters.length > 0 ? [{ filters }] : []
+
+    console.log(`[contacts] filters — statuses: [${hsStatuses.join(', ') || 'none'}] | lifecycles: [${hsLifecycles.join(', ') || 'none'}] | owner: ${ownerId || 'any'}`)
 
     try {
-      const HS_SEARCH_URL = 'https://api.hubapi.com/crm/v3/objects/contacts/search'
-      const requestBody = {
-        filterGroups,
-        sorts: [{ propertyName: 'createdate', direction: 'DESCENDING' }],
-        properties: ['firstname', 'lastname', 'email', 'phone', 'company', 'lifecyclestage', 'hs_lead_status', 'hs_owner_id', 'address', 'city', 'state', 'zip', 'photo_url'],
-        limit: 100
-      }
-
       let allContacts = []
       let after = null
-      const MAX_PAGES = 20
+      let page = 0
 
-      for (let page = 0; page < MAX_PAGES; page++) {
-        const body = after ? { ...requestBody, after } : requestBody
+      do {
+        const body = {
+          filterGroups,
+          sorts: [{ propertyName: 'createdate', direction: 'DESCENDING' }],
+          properties: PROPERTIES,
+          limit: 100,
+          ...(after ? { after } : {}),
+        }
+
         const response = await fetch(HS_SEARCH_URL, {
           method: 'POST',
           headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         })
+
         const data = await response.json()
+
         if (!response.ok) {
           console.error('[contacts] HubSpot error:', response.status, data)
-          break
+          return reply.status(response.status).send({ error: 'HubSpot search failed', detail: data })
         }
-        console.log(`[contacts] page ${page + 1}: got ${data.results?.length ?? 0} contacts (total so far: ${allContacts.length + (data.results?.length ?? 0)})`)
+
+        page++
         allContacts = allContacts.concat(data.results || [])
         after = data.paging?.next?.after ?? null
-        if (!after) break
-      }
+        console.log(`[contacts] page ${page}: +${data.results?.length ?? 0} (total so far: ${allContacts.length})`)
 
+      } while (after)
+
+      console.log(`[contacts] fetched ${allContacts.length} from HubSpot`);
+      console.log(`[contacts] Client side filtering for locations: ${locations || 'none'}`);
+
+      // Client-side location filtering on the full result set
       let contacts = allContacts
-
       if (locations) {
         const locationValues = locations.split(',').map(l => l.trim()).filter(Boolean)
         if (locationValues.length > 0) {
           const variants = locationValues.map(resolveVariant)
           contacts = contacts.filter(c => contactMatchesLocations(c.properties, variants))
+          console.log(`[contacts] after location filter: ${contacts.length} (dropped ${allContacts.length - contacts.length})`)
         }
       }
 
+      console.log(`[contacts] sending ${contacts.length} contacts to client`)
       reply.send({ results: contacts })
 
     } catch (err) {

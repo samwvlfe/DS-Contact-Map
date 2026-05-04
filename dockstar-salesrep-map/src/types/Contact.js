@@ -9,7 +9,7 @@ export function contactFromHubspot(raw) {
         company: p.company ?? null,
         lifecycleStage: p.lifecyclestage ?? null,
         leadStatus: p.hs_lead_status ?? null,
-        ownerId: p.hs_owner_id ?? null,
+        ownerId: p.hubspot_owner_id ?? null,
         address: p.address ?? null,
         city: p.city ?? null,
         state: p.state ?? null,

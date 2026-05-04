@@ -1,12 +1,11 @@
 export default async function listRoutes(fastify) {
 
   fastify.post('/lists/create', async (request, reply) => {
-    const authHeader = request.headers.authorization
-    if (!authHeader) {
-      return reply.status(401).send({ error: 'No token provided' })
-    }
+    const accessToken = request.session.tokens?.accessToken
 
-    const accessToken = authHeader.replace('Bearer ', '')
+    if (!accessToken) {
+      return reply.status(401).send({ error: 'Not authenticated' })
+    }
     const { listName, contactIds } = request.body
 
     if (!listName || !listName.trim()) {

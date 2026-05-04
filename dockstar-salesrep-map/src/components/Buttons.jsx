@@ -1,8 +1,11 @@
 import styles from "./Buttons.module.css";
+import { useUser } from "../context/UserContext";
 
 export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
+  const { user } = useUser();
+  const initial = user?.firstName?.[0]?.toUpperCase() ?? null;
 
-  function handleSelectedPress() {
+  function handleCreateListPress() {
     if (activePanel === "createlist") {
       onSetPanel("filter", 50);
     } else {
@@ -10,11 +13,11 @@ export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
     }
   }
 
-  function handleQVPress() {
-    if (activePanel === "qv") {
+  function handleUserPress() {
+    if (activePanel === "user") {
       onSetPanel("filter", 85);
     } else {
-      onSetPanel("qv", 85);
+      onSetPanel("user", 85);
     }
   }
 
@@ -24,7 +27,7 @@ export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
       {/* Selected Contacts Button */}
       <div
         className={styles.btn}
-        onClick={handleSelectedPress}
+        onClick={handleCreateListPress}
         style={{
           background: activePanel === "createlist" ? "#cd7259" : "var(--orange)",
           border: `2px solid ${activePanel === "createlist" ? "white" : "transparent"}`,
@@ -45,21 +48,19 @@ export default function Buttons({ activePanel, onSetPanel, selectedCount }) {
         )}
       </div>
 
-      {/* Quick View Button */}
+      {/* User Info Button */}
       <div
         className={styles.btn}
-        onClick={handleQVPress}
+        onClick={handleUserPress}
         style={{
-          background: activePanel === "qv" ? "#7f7f7f" : "#3a3a3a",
-          border: `2px solid ${activePanel === "qv" ? "white" : "transparent"}`,
+          background: activePanel === "user" ? "#888888" : "#606060",
+          border: `2px solid ${activePanel === "user" ? "white" : "transparent"}`,
+          color: "white",
+          fontSize: 18,
+          fontWeight: "bold",
         }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M20 21v-2a4 4 0 0 0-4-4h-4a4 4 0 0 0-4 4v2" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-          <circle cx="12" cy="7" r="4" stroke="white" strokeWidth="2"/>
-          <line x1="18" y1="11" x2="22" y2="11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="18" y1="15" x2="22" y2="15" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
+        {initial}
       </div>
 
     </div>

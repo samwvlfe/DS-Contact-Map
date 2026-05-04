@@ -8,13 +8,16 @@ const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3002";
 export async function fetchContacts(filters = {}) {
     const params = new URLSearchParams();
     if (filters.statuses?.length) params.set("statuses", filters.statuses.join(","));
+    if (filters.lifecycles?.length) params.set("lifecycles", filters.lifecycles.join(","));
     if (filters.locations?.length) params.set("locations", filters.locations.join(","));
+    if (filters.ownerId) params.set("ownerId", filters.ownerId);
 
     const res = await fetchWithAuth(`${BASE}/api/contacts?${params}`);
     if (!res) return null;
 
     const data = await res.json();
     const contacts = (data.results ?? []).map(contactFromHubspot);
+    console.log(`[api] received ${contacts.length} contacts from server:`, contacts);
     return geocodeContacts(contacts);
 }
 

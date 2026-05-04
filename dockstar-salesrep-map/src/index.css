@@ -76,17 +76,25 @@ body {
 ._remove{
     background-color: var(--remove);
 }
-._connected{
+._connected, ._customer{
   background-color: #e8f5e9;
   color: #2e7d32;
 }
-._new{
+._new, ._lead{
   background-color: #e3f2fd;
   color: #1565c0;
 }
-._attempted{
+._attempted, ._opportunity{
   background-color: #fff3e0;
   color: #e65100;
+}
+._unqual{
+  background-color: #b7b7b7;
+  color: #373737;
+}
+._nurture{
+  background-color: #fae0ff;
+  color: #e600d3;
 }
 ._orange{
   background-color: var(--orange);

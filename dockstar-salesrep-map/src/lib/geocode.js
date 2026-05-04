@@ -66,8 +66,18 @@ export async function geocodeContact(contact) {
  * Each contact is enriched with lat/lng fields (null if geocoding failed).
  */
 export async function geocodeContacts(contacts) {
+    const noLocation = contacts.filter(c => !c.address && !c.city && !c.state);
+    if (noLocation.length > 0) {
+        console.log(
+            `[geocode] Dropped ${noLocation.length} contact(s) with no location data:`,
+            noLocation.map(c => ({ id: c.id, name: `${c.firstName ?? ''} ${c.lastName ?? ''}`.trim() || '(unnamed)' }))
+        );
+    }
+
+    const withLocation = contacts.filter(c => c.address || c.city || c.state);
+
     return Promise.all(
-        contacts.map(async (contact) => {
+        withLocation.map(async (contact) => {
             const coords = await geocodeContact(contact);
             return {
                 ...contact,

@@ -1,0 +1,32 @@
+.avatar {
+  min-width: 64px;
+  min-height: 64px;
+  border-radius: 50%;
+  background-color: var(--orange);
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.logout{
+  color: var(--remove);
+  align-self: flex-end;
+  border: 2px solid var(--remove);
+  background-color: var(--white);
+}
+
+.error {
+  color: var(--remove, red);
+  font-size: var(--font-m);
+  padding: var(--pad);
+}
+
+.loading {
+  color: var(--text);
+  font-size: var(--font-m);
+  padding: var(--pad);
+}

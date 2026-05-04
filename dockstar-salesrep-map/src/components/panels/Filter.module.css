@@ -7,7 +7,6 @@
 .title{
     font-size: var(--font-m);
     color: var(--text);
-    padding-bottom: var(--pad);
 }
 
 /* location input & dropdown */
@@ -71,12 +70,12 @@
 }
 
 /* lead status options */
-.lead-status-sel-cont{
+.grid-sel-cont{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 5px;
 }
-.lead-status{
+.grid-item{
     justify-content: center;
     text-align: center;
     border: var(--border);
@@ -86,28 +85,33 @@
     color: var(--text);
     cursor: pointer;
 }
-.lead-status:active{
+.grid-item:active{
     transform: translateY(2px);
 }
-.lead-status.selected{
+.grid-item.selected{
     border-color: var(--orange);
     color: var(--orange);
 }
 
-/* distance slider */
-.sel-distance{
-    color: var(--orange);
+/* owner toggle */
+.toggle{
+    display: flex;
+    align-self: flex-start;
+    background-color: var(--bg-alt);
+    border-radius: var(--rad);
+    overflow: hidden;
+}
+.toggleOption{
+    padding: 5px 10px;
     font-size: var(--font-s);
-}
-.distance-slider{
-    width: 100%;
-    accent-color: var(--orange);
-}
-.slider-markers{
-    justify-content: space-between;
-    font-size: var(--font-xs);
     color: var(--text);
-    margin-top: -6px;
+    cursor: pointer;
+    user-select: none;
+}
+.toggleOption.toggleActive{
+    background-color: var(--orange);
+    color: white;
+    font-weight: bold;
 }
 
 .btnRow{

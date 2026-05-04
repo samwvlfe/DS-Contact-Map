@@ -21,7 +21,7 @@ export default function Contact({ contact, onAdd }) {
     return (
         <div className="stack gap10">
             <div className="row apart">
-                <div className={`${styles.name} h1`}>{name}</div>
+                <div className={styles.name}>{name}</div>
                 <div className="_btn _add" onClick={() => onAdd?.(contact)}>Add to List</div>
             </div>
             <div className={`${styles.infoCont} stack`}>

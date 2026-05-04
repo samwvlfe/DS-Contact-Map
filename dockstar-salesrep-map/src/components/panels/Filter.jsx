@@ -1,14 +1,16 @@
 import { useState } from "react";
 import styles from "./Filter.module.css";
 import ContactList from "../ContactList";
-import { LEAD_STATUSES } from "../../../shared/leadStatus";
+import { LEAD_STATUSES, LIFECYCLE_STAGE } from "../../../shared/leadStatus";
 import { fetchContacts } from "../../lib/api";
 import { US_STATES } from "../../data/states";
+import { useUser } from "../../context/UserContext";
 
-const DEFAULT_FILTERS = { locations: [], statuses: [], distance: 25 };
+const DEFAULT_FILTERS = { locations: [], statuses: [], lifecycles: [], ownerFilter: 'mine' };
 
 export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
     const [draft, setDraft] = useState(DEFAULT_FILTERS);
+    const { user } = useUser();
     const [locationInput, setLocationInput] = useState("");
     const [contacts, setContacts] = useState([]);
     const [filtersVisible, setFiltersVisible] = useState(true);
@@ -34,7 +36,16 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
         }));
     }
 
-    const activeCount = draft.locations.length + draft.statuses.length + (draft.distance !== 25 ? 1 : 0);
+    function toggleLifecycle(lifecycle) {
+        setDraft(d => ({
+            ...d,
+            lifecycles: d.lifecycles.includes(lifecycle)
+                ? d.lifecycles.filter(l => l !== lifecycle)
+                : [...d.lifecycles, lifecycle],
+        }));
+    }
+
+    const activeCount = draft.locations.length + draft.statuses.length + draft.lifecycles.length + (draft.ownerFilter === 'any' ? 1 : 0);
 
     const trimmed = locationInput.trim();
     const q = trimmed.toLowerCase();
@@ -47,7 +58,8 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
     async function applyFilters() {
         setFetchError(null);
         try {
-            const results = await fetchContacts(draft);
+            const ownerId = draft.ownerFilter === 'mine' ? user?.userId : null;
+            const results = await fetchContacts({ ...draft, ownerId });
             if (!results) {
                 setFetchError('Not logged in — please reconnect to HubSpot.');
                 return;
@@ -64,6 +76,19 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
         <>
         <div className={`${styles.filterCont} stack gap20`}>
             {filtersVisible && <div className="stack gap20">
+                <div className="stack gap10">
+                    <div className={`${styles.title} bold`}>CONTACT OWNER</div>
+                    <div className={styles.toggle}>
+                        <div
+                            className={`${styles.toggleOption} ${draft.ownerFilter === 'mine' ? styles.toggleActive : ''}`}
+                            onClick={() => setDraft(d => ({ ...d, ownerFilter: 'mine' }))}
+                        >Just Mine</div>
+                        <div
+                            className={`${styles.toggleOption} ${draft.ownerFilter === 'any' ? styles.toggleActive : ''}`}
+                            onClick={() => setDraft(d => ({ ...d, ownerFilter: 'any' }))}
+                        >Any Owner</div>
+                    </div>
+                </div>
                 {/* LOCATION FILTER */}
                 <div className="stack gap10">
                     <div className={`${styles.title} bold`}>LOCATION</div>
@@ -95,12 +120,12 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
 
                 {/* LEAD STATUS FILTER */}
                 <div className="stack gap10">
-                    <div className={styles.title}>LEAD STATUS</div>
-                    <div className={styles['lead-status-sel-cont']}>
+                    <div className={`${styles.title} bold`}>LEAD STATUS</div>
+                    <div className={styles['grid-sel-cont']}>
                         {LEAD_STATUSES.map(s => (
                             <div
                                 key={s.key}
-                                className={`${styles['lead-status']} ${draft.statuses.includes(s.label) ? styles.selected : ""} row`}
+                                className={`${styles['grid-item']} ${draft.statuses.includes(s.label) ? styles.selected : ""} row`}
                                 onClick={() => toggleStatus(s.label)}
                             >
                                 {s.label}
@@ -109,27 +134,22 @@ export default function Filter({ onApply, onAdd, onRemove, selectedContacts }) {
                     </div>
                 </div>
 
-                {/* DISTANCE FILTER */}
-                {/* <div className="stack gap10">
-                    <div className="row apart">
-                        <div className={styles.title}>DISTANCE</div>
-                        <div className={styles['sel-distance']}>{draft.distance} MI</div>
+                {/* LIFECYCLE STAGE FILTER */}
+                <div className="stack gap10">
+                    <div className={`${styles.title} bold`}>LIFECYCLE STAGE</div>
+                    <div className={styles['grid-sel-cont']}>
+                        {LIFECYCLE_STAGE.map(s => (
+                            <div
+                                key={s.key}
+                                className={`${styles['grid-item']} ${draft.lifecycles.includes(s.label) ? styles.selected : ""} row`}
+                                onClick={() => toggleLifecycle(s.label)}
+                            >
+                                {s.label}
+                            </div>
+                        ))}
                     </div>
-                    <input
-                        className={styles['distance-slider']}
-                        type="range"
-                        min="0"
-                        max="150"
-                        step="5"
-                        value={draft.distance}
-                        onChange={e => setDraft(d => ({ ...d, distance: Number(e.target.value) }))}
-                    />
-                    <div className={`${styles['slider-markers']} row`}>
-                        <span>0</span>
-                        <span>75</span>
-                        <span>150</span>
-                    </div>
-                </div> */}
+                </div>
+
             </div>}
             {fetchError && <div style={{ color: 'var(--remove, red)', fontSize: 13 }}>{fetchError}</div>}
             <div className={`${styles.btnRow} row gap10`}>

@@ -1,19 +1,19 @@
-// src/pages/AuthSuccess.jsx
 import { useEffect } from 'react';
 
 export default function AuthSuccess() {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
+    fetch('http://localhost:3002/auth/me', { credentials: 'include' })
+      .then(r => {
+        if (!r.ok) throw new Error('Auth failed')
+        return r.json()
+      })
+      .then(() => {
+        window.location.href = '/'
+      })
+      .catch(() => {
+        window.location.href = '/login?error=auth_failed'
+      })
+  }, [])
 
-    if (accessToken) {
-      localStorage.setItem('hs_access_token', accessToken);
-      localStorage.setItem('hs_refresh_token', refreshToken);
-    }
-
-    window.location.href = '/';
-  }, []);
-
-  return <p>Logging you in...</p>;
+  return <p>Logging you in...</p>
 }
