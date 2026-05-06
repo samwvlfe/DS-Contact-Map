@@ -20,4 +20,13 @@ npm run build
 npx cap sync ios
 npx cap open ios
 
+# Logic
+Can filter by contacts owned by user or all users.
+Admin ability: can filter by all contacts are chosen salesmen contacts
+    need to impliment
+Use hubspot filter groups for lifecycle stage and lead status 
+The returned list gets filtered client side for location
+If any contacts can't get geocoded, they get dropped
+    need to create way to view those
+
 login url: https://ds-contact-map.onrender.com/auth/login

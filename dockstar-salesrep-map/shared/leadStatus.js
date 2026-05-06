@@ -8,8 +8,7 @@ export const LIFECYCLE_STAGE = [
     { key: 'customer',    label: 'Customer',                 hsValue: 'CUSTOMER',                 className: '_customer'    },
     { key: 'opportunity', label: 'Opportunity',              hsValue: 'OPPORTUNITY',              className: '_opportunity' },
     { key: 'lead',        label: 'Lead',                     hsValue: 'LEAD',                     className: '_lead'        },
-    { key: 'mqlead',      label: 'Marketing Qualified Lead', hsValue: 'MARKETING QUALIFIED LEAD', className: '_lead'        },
-    { key: 'nurture',     label: 'Nurture',                  hsValue: 'NURTURE',                  className: '_nurture'     }
+    { key: 'mqlead',      label: 'Marketing Qualified Lead', hsValue: 'MARKETING QUALIFIED LEAD', className: '_lead'        }
 ]
 
 const ALL_STATUSES = [...LEAD_STATUSES, ...LIFECYCLE_STAGE];
