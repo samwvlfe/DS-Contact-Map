@@ -69,18 +69,16 @@ export default async function contactRoutes(fastify) {
     console.log(`[contacts] filters — statuses: [${hsStatuses.join(', ') || 'none'}] | lifecycles: [${hsLifecycles.join(', ') || 'none'}] | owner: ${ownerId || 'any'}`)
 
     try {
-      const MAX_CONTACTS = 200
       let allContacts = []
       let after = null
       let page = 0
 
       do {
-        const remaining = MAX_CONTACTS - allContacts.length
         const body = {
           filterGroups,
           sorts: [{ propertyName: 'createdate', direction: 'DESCENDING' }],
           properties: PROPERTIES,
-          limit: Math.min(100, remaining),
+          limit: 100,
           ...(after ? { after } : {}),
         }
 
@@ -102,7 +100,7 @@ export default async function contactRoutes(fastify) {
         after = data.paging?.next?.after ?? null
         console.log(`[contacts] page ${page}: +${data.results?.length ?? 0} (total so far: ${allContacts.length})`)
 
-      } while (after && allContacts.length < MAX_CONTACTS)
+      } while (after)
 
       console.log(`[contacts] fetched ${allContacts.length} from HubSpot`);
       console.log(`[contacts] Client side filtering for locations: ${locations || 'none'}`);
